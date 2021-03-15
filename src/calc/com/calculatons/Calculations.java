@@ -8,6 +8,7 @@ public class Calculations {
         return (("+-/*^()".indexOf(symbol) != -1));
     }
 
+    //Метод расстановки приоритета знаков
     static private byte getStackPriority(char symbol) {
         switch (symbol) {
             case '(':
@@ -33,6 +34,7 @@ public class Calculations {
         return ((" =".indexOf(symbol) != -1));
     }
 
+    //Метод преобразовывывания выражение в постфиксную запись
     static private String getExpression(String input) {
         var arrInput = input.toCharArray();
         StringBuilder output = new StringBuilder();
@@ -54,10 +56,10 @@ public class Calculations {
 
                     if (i == input.length()) break; //Если символ - последний, то выходим из цикла
                 }
-
                 output.append(" "); //Дописываем после числа пробел в строку с выражением
                 i--; //Возвращаемся на один символ назад, к символу перед разделителем
             }
+
             //Если символ - оператор
             if (isOperator(arrInput[i]))
             {
@@ -87,6 +89,7 @@ public class Calculations {
         return output.toString();
     }
 
+    //Метод расчета значения
     static private double Counting(String input) {
         var arrInput = input.toCharArray();
         Stack<Double> temp = new Stack<>();
@@ -129,6 +132,11 @@ public class Calculations {
                 return Double.parseDouble(String.valueOf(Math.pow(first, second)));
         }
         return 0;
+    }
+
+    static public double Calculate(String input)
+    {
+        return Counting(getExpression(input));
     }
 }
 
