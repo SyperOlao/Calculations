@@ -136,6 +136,11 @@ public class Calculations {
 
     static public double Calculate(String input)
     {
+        try {
+            Counting(getExpression(input));
+        } catch (Exception e){
+            return Double.POSITIVE_INFINITY;
+        }
         return Counting(getExpression(input));
     }
 }
