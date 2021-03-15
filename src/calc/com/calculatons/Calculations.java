@@ -33,6 +33,59 @@ public class Calculations {
         return ((" =".indexOf(symbol) != -1));
     }
 
+    static private String getExpression(String input) {
+        var arrInput = input.toCharArray();
+        StringBuilder output = new StringBuilder();
+        Stack<Character> operatorStack = new Stack<>();
+
+        for (int i = 0; i < arrInput.length; i++)
+        {
+            //Разделители пропускаем
+            if (isSeparator(arrInput[i]))
+                continue;
+
+            //Если символ - цифра, то считываем все число
+            if (Character.isDigit(arrInput[i]))
+            {
+                //Читаем до разделителя или оператора, что бы получить число
+                while (!isSeparator(arrInput[i]) && !isOperator(arrInput[i])) {
+                    output.append(arrInput[i]); //Добавляем каждую цифру числа к нашей строке
+                    i++;
+
+                    if (i == input.length()) break; //Если символ - последний, то выходим из цикла
+                }
+
+                output.append(" "); //Дописываем после числа пробел в строку с выражением
+                i--; //Возвращаемся на один символ назад, к символу перед разделителем
+            }
+            //Если символ - оператор
+            if (isOperator(arrInput[i]))
+            {
+                if (arrInput[i] == '(')
+                    operatorStack.push(arrInput[i]);
+                else if (arrInput[i] == ')')
+                {
+                    Character s = operatorStack.pop();
+
+                    while (s != '(') {
+                        output.append(s.toString()).append(' ');
+                        s = operatorStack.pop();
+                    }
+                } else
+                {
+                    if (operatorStack.size() > 0)
+                        if (getStackPriority(arrInput[i]) <= getStackPriority(operatorStack.peek()))
+                            output.append(operatorStack.pop().toString()).append(" ");
+                    operatorStack.push(arrInput[i]);
+                }
+            }
+        }
+        //Когда прошли по всем символам, выкидываем из стека операторы в строку
+        while (operatorStack.size() > 0)
+            output.append(operatorStack.pop()).append(" ");
+
+        return output.toString();
+    }
 
     static private double Counting(String input) {
         var arrInput = input.toCharArray();
@@ -42,14 +95,14 @@ public class Calculations {
         {
             //Если символ - цифра, то читаем все число и записываем на вершину стека
             if (Character.isDigit(arrInput[i])) {
-                String a = "";
+                StringBuilder a = new StringBuilder();
                 while (!isSeparator(arrInput[i]) && !isOperator(arrInput[i]))
                 {
-                    a += arrInput[i];
+                    a.append(arrInput[i]);
                     i++;
                     if (i == arrInput.length) break;
                 }
-                temp.push(Double.parseDouble(a));
+                temp.push(Double.parseDouble(a.toString()));
                 i--;
             } else if (isOperator(arrInput[i]))
             {
